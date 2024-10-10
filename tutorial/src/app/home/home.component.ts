@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ProductsService } from '../services/products.service';
-import { Product } from '../../types';
+import { Product, Products } from '../../types';
 import { ProductComponent } from '../components/product/product.component';
 import { CommonModule } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
@@ -18,6 +18,8 @@ export class HomeComponent {
   products: Product[] = [];
   totalRecords: number = 0;
   rows: number = 5;
+  baseUrl: string = 'http://localhost:3000';
+  clothesController: string = '/clothes';
 
   onProductOutput = (product: Product) => {
     console.log(product, 'Output');
@@ -29,23 +31,59 @@ export class HomeComponent {
 
   fetchProducts = (page: number, perPage: number) => {
     this.productsService
-      .getProducts('http://localhost:3000/clothes', { page, perPage })
-      .subscribe((products) => {
-        this.products = products.items;
-        this.totalRecords = products.total;
+      .getProducts(`${this.baseUrl}${this.clothesController}`, {
+        page,
+        perPage,
+      })
+      .subscribe({
+        next: (data: Products) => {
+          this.products = data.items;
+          this.totalRecords = data.total;
+        },
+        error: (error) => {
+          console.log(error);
+        },
       });
   };
 
-  editProduct = (product: Product) => {
-    console.log(product, 'Edit');
+  editProduct = (product: Product, id: number) => {
+    this.productsService
+      .addProduct(`${this.baseUrl}}${this.clothesController}/${id}`, product)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+        },
+        error: (error) => console.log(error),
+      });
   };
 
-  deleteProduct = (product: Product) => {
-    console.log(product, 'Delete');
+  deleteProduct = (id: number) => {
+    this.productsService
+      .deleteProduct(`${this.baseUrl}}${this.clothesController}/${id}`)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
   };
 
   addProduct = (product: Product) => {
-    console.log(product, 'Add');
+    this.productsService
+      .addProduct(`${this.baseUrl}}${this.clothesController}`, product)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
   };
 
   ngOnInit() {

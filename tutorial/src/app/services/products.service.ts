@@ -24,7 +24,7 @@ export class ProductsService {
     return this.apiService.put(url, body, {});
   };
 
-  deleteProduct = (url: string, body: any): Observable<any> => {
-    return this.apiService.delete(url, body);
+  deleteProduct = (url: string): Observable<any> => {
+    return this.apiService.delete(url, {});
   };
 }
