@@ -35,12 +35,13 @@ export interface Products {
   totalPages: number;
 }
 
-export interface Product {
+export type Product = {
+  id?: number;
   price: string;
   name: string;
   image: string;
   rating: number;
-}
+};
 
 export interface PaginationParams {
   [param: string]:
