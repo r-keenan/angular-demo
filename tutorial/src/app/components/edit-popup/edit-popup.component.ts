@@ -30,12 +30,17 @@ export class EditPopupComponent {
   };
 
   @Output() confirm = new EventEmitter<Product>();
+  // This is needed for two-way binding for display displayEditPopup and displayAddPopup
+  @Output() displayChange = new EventEmitter<boolean>();
 
   onConfirm() {
     this.confirm.emit(this.product);
+    this.display = false;
+    this.displayChange.emit(this.display);
   }
 
   onCancel() {
     this.display = false;
+    this.displayChange.emit(this.display);
   }
 }
